@@ -222,5 +222,5 @@ async def set_timezone(ctx, arg):
         await paginator.start(ctx)
 
 
-client.run(os.environ['Token'])
+client.run('ODYwNzc5NjY5Mjg4Nzc5Nzc2.YOANiQ._PJtAoJR3aUSTrrCXTBhVo2ZG_I')
 

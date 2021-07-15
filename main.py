@@ -9,11 +9,14 @@ import Time
 import main2
 import Data_base
 from pygicord import Paginator
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 client = commands.Bot(command_prefix='%', help_command=None)
 
-token = 'ODYwNzc5NjY5Mjg4Nzc5Nzc2.YOANiQ.JogiD2CEBK_f8kh67sNiXPNT6nc'
 text_channel_list = []
 upcoming_data = []
 default_data = ['codeforces.com',
@@ -222,6 +225,5 @@ async def set_timezone(ctx, arg):
         paginator = Paginator(pages=pages)
         await paginator.start(ctx)
 
-
-client.run(f'{token}')
-
+Token = os.getenv('Token')
+client.run(Token)

@@ -1,62 +1,80 @@
 import datetime
-from time import strftime, gmtime,localtime
+from time import strftime, gmtime
+import discord
 import pytz
 
 
 def time_url():
     time = strftime('%Y-%m-%d %H:%M:%S', gmtime())
-    # time = str(datetime.datetime.now())
-    # time = time[0:19]
     time = time.replace(' ', 'T')
     time = time.replace(':', '%3A')
     return time
 
 
-# def Local():
-#     start = '2021-07-06T18%3A32%3A45'
-#     start = start.replace('T', ' ')
-#     timestamp = start.replace(tzinfo=timezone.utc).timestamp()
-#     print(timestamp)
+def check(i):
+    time = strftime('%Y:%m:%d %H:%M:%S', gmtime())
+    start_time = i['start']
+    start_time = start_time.replace('-', ':')
+    start_time = start_time.replace('T', ' ')
+    FMT = '%Y:%m:%d %H:%M:%S'
+    tdelta = datetime.datetime.strptime(start_time, FMT) - datetime.datetime.strptime(time, FMT)
+    if 1800 <= tdelta.total_seconds() <= 1980:
+        return 1
+    else:
+        return 0
 
 
-# a = [{'id': 213, 'name': 'as', 'con': ['z', 'a']}, {'id': 223, 'name': 'as', 'con': ['we', 'bcd']}]
-# a = sorted(a, key=lambda k: k['con'])
-# #print(a)
-# a = list(filter(lambda x: x['id'] == 213, a))
-# a = a.find({id: 213})
-# print(a)
-# now = datetime.datetime.now()
-# local_now = now.astimezone()
-# # local_tz = local_now.tznfo
-# # local_tzname = local_tz.tzname(locail_now)
-# local_now = datetime.datetime.now() - datetime.timedelta(hours=5, minutes=30)
-# local_now.__format__('s')
-# print(local_now)
-# mongoose.connect('mongodb+srv://Ksathwik03:Ksathwik03@cluster0.xtzux.mongodb.net/Happy?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true }, () => { console.log('database loaded') });
-# db = pymongo.MongoClient('mongodb+srv://Ksathwik03:Ksathwik03@cluster0.xtzux.mongodb.net/Happy?retryWrites=true&w=majority')
-# db = db["Happy"]
-# db = db["happies"]
-# for i in db:
-#     print(i)
+def check_timezone(timezone):
+    for tz in pytz.all_timezones:
+        if tz == timezone:
+            return 1
+    return 0
 
 
+def show_all_timezones():
+    pages = []
+    j = 0
+    description = ""
+    for tz in pytz.all_timezones:
+        j = j + 1
+        description += f'{tz}\n'
+        if j % 15 == 0:
+            description += f'All vaild time zones are avaliable here https://gist.github.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568 \n Page no. {j / 15}'
+            embed = discord.Embed(
+                title="Valid time zones",
+                description=description,
+                color=discord.Colour.red()
+            )
+            pages.append(embed)
+            description = ""
+    if j % 15 != 0:
+        description += f'Page no. {j / 15}'
+        embed = discord.Embed(
+            title="Valid time zones",
+            description=description,
+            color=discord.Colour.red()
+        )
+        pages.append(embed)
+    return pages
+
+# def sut(tim):
+#     start_time = tim
+#     start_time = start_time.replace('-', ':')
+#     start_time = start_time.replace('T', ' ')
+#     FMT = '%Y:%m:%d %H:%M:%S'
+#     time = datetime.datetime.strftime(start_time, FMT)
+#     t = datetime.datetime.strptime(time,'%Y-%m-%d %H:%M:%S')
+#     t = t.replace(tzinfo=datetime.timezone.utc).astimezone(timezone('Europe/Berlin'))
+#     print(t)
+
+# from datetime import datetime
+# from pytz import timezone
 #
-# client = pymongo.MongoClient("mongodb+srv://Ksathwik03:Ksathwik03@cluster0.xtzux.mongodb.net/Python?retryWrites=true&w=majority")
-# db = client['Python']
-# db = db['Ksathwik03']
-# a = db.find({})
-# for i in a:
-#     print(i)
-# print(Local())
+# fmt = "%Y-%m-%d %H:%M:%S %Z%z"
+# timezonelist = ['UTC','US/Pacific','Europe/Berlin']
+# for zone in timezonelist:
+#
+#     now_time = datetime.now(timezone(zone))
+#     print(now_time.strftime(fmt))
 
-# tz = datetime.datetime.now(datetime.timezone.utc).astimezone().tzinfo
-# print(tz)
-# local_time = datetime.datetime(2010, 4, 27, 12, 0, 0, 0, tzinfo=pytz.timezone(str(tz)))
-# print(local_time)
 
-from datetime import timedelta
-
-s1 = '10:33:26'
-s2 = '11:15:49' # for example
-FMT = '%H:%M:%S'
-timedelta = datetime.strptime(s2, FMT) - datetime.strptime(s1, FMT)

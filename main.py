@@ -13,6 +13,7 @@ from pygicord import Paginator
 
 client = commands.Bot(command_prefix='%', help_command=None)
 
+token = 'ODYwNzc5NjY5Mjg4Nzc5Nzc2.YOANiQ.JogiD2CEBK_f8kh67sNiXPNT6nc'
 text_channel_list = []
 upcoming_data = []
 default_data = ['codeforces.com',
@@ -222,5 +223,5 @@ async def set_timezone(ctx, arg):
         await paginator.start(ctx)
 
 
-client.run('ODYwNzc5NjY5Mjg4Nzc5Nzc2.YOANiQ._PJtAoJR3aUSTrrCXTBhVo2ZG_I')
+client.run(f'{token}')
 

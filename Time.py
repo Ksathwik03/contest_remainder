@@ -57,24 +57,3 @@ def show_all_timezones():
         pages.append(embed)
     return pages
 
-# def sut(tim):
-#     start_time = tim
-#     start_time = start_time.replace('-', ':')
-#     start_time = start_time.replace('T', ' ')
-#     FMT = '%Y:%m:%d %H:%M:%S'
-#     time = datetime.datetime.strftime(start_time, FMT)
-#     t = datetime.datetime.strptime(time,'%Y-%m-%d %H:%M:%S')
-#     t = t.replace(tzinfo=datetime.timezone.utc).astimezone(timezone('Europe/Berlin'))
-#     print(t)
-
-# from datetime import datetime
-# from pytz import timezone
-#
-# fmt = "%Y-%m-%d %H:%M:%S %Z%z"
-# timezonelist = ['UTC','US/Pacific','Europe/Berlin']
-# for zone in timezonelist:
-#
-#     now_time = datetime.now(timezone(zone))
-#     print(now_time.strftime(fmt))
-
-

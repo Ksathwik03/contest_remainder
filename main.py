@@ -1,19 +1,18 @@
 import asyncio
-import os
-import DiscordUtils
-import DiscordUtils as DiscordUtils
 import discord
 import requests
+import discord.ext
 from discord.ext import commands
 import Time
 import main2
 import Data_base
+import pygicord
 from pygicord import Paginator
 import os
+import dotenv
 from dotenv import load_dotenv
 
 load_dotenv()
-
 
 client = commands.Bot(command_prefix='%', help_command=None)
 
@@ -42,6 +41,20 @@ supported_data = ['codeforces.com',
                   'ch24.org',
                   'leetcode.com',
                   'csacademy.com']
+
+
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        pass
+    elif isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send('Missing the required arguments \n check out %help for more details on commands')
+    elif isinstance(error, commands.TooManyArguments):
+        await ctx.send('Too many arguments/n check out %help for more details on commands')
+    else:
+        f = open("errors.txt", "a")
+        f.write(f'{error}')
+        f.close()
 
 
 async def check(guild):
@@ -80,8 +93,10 @@ async def channel_list():
         global Remainder_data, default_data
         if len(list(db.find({'id': guild.id}))) == 0:
             channel = await check(guild)
-            Remainder_data.append({'id': guild.id, 'websites': default_data, 'remainder': 600, 'channel': channel.id,'timezone': 'UTC'})
-            db.insert_one({'id': guild.id, 'websites': default_data, 'remainder': 600, 'channel': channel.id,'timezone': 'UTC'})
+            Remainder_data.append(
+                {'id': guild.id, 'websites': default_data, 'remainder': 600, 'channel': channel.id, 'timezone': 'UTC'})
+            db.insert_one(
+                {'id': guild.id, 'websites': default_data, 'remainder': 600, 'channel': channel.id, 'timezone': 'UTC'})
 
 
 async def reminder():
@@ -121,20 +136,24 @@ async def on_ready():
 
 @client.command()
 async def help(ctx):
-    description = main2.help_description()
-    embed = discord.Embed(
-        title=' Contest remainder',
-        description= description,
-        color=discord.Colour.red()
-    )
+    embed = main2.help_description()
     await ctx.send(embed=embed)
 
 
 @client.command()
-async def upcoming(ctx):
+async def upcoming(ctx, arg):
+    global supported_data
     global upcoming_data, Remainder_data
     temp = list(filter(lambda x: x['id'] == ctx.guild.id, Remainder_data))
-    temp = list(filter(lambda x: temp[0]['websites'].count(x['resource']) >= 1, upcoming_data['objects']))
+    if arg == 'subscribed' or arg == '':
+        temp = list(filter(lambda x: temp[0]['websites'].count(x['resource']) >= 1, upcoming_data['objects']))
+    elif arg == 'all':
+        temp = upcoming_data['objects']
+    else:
+        temp = list(filter(lambda x: x['resource'] == arg, upcoming_data['objects']))
+        if len(temp) == 0:
+            await ctx.send('No upcoming contests')
+            return
     timezone = db.find_one({'id': ctx.guild.id})
     timezone = timezone['timezone']
     pages = main2.upcoming(temp, timezone)
@@ -148,12 +167,7 @@ async def on_guild_join(guild):
     channel = await check(guild)
     db.insert_one(
         {'id': guild.id, 'websites': default_data, 'remainder': 600, 'channel': channel.id, 'timezone': 'UTC'})
-    embed = discord.Embed(
-        title='Contest Reminder',
-        description='This bot reminds 30 minutes before a contest\n' \
-                    'Type !help to know all the functionalities of bot',
-        color=discord.Colour.red()
-    )
+    embed = main2.help_description()
     await channel.send(embed=embed)
 
 
@@ -203,9 +217,10 @@ async def del_website(ctx, arg):
 
 @client.command()
 async def supported_website(ctx):
+    await ctx.guild.create
     s = 'Supported websites list - \n'
     for i in supported_data:
-        s += f'{i}\n'
+        s += f'[{i}]({i})\n'
     embed = discord.Embed(
         title='Supported websites',
         description=s,
@@ -224,6 +239,7 @@ async def set_timezone(ctx, arg):
         pages = Time.show_all_timezones()
         paginator = Paginator(pages=pages)
         await paginator.start(ctx)
+
 
 Token = os.getenv('Token')
 client.run(Token)
